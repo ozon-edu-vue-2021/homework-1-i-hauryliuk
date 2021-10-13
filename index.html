@@ -35,13 +35,13 @@
         <p><strong>Result: <span class="sum"></span></strong></p>
         <div class="math">
             Counter:
-            <button class="button minus">-1</button>
-            <button class="button plus">+1</button>
+            <button class="button counter-minus">-1</button>
+            <button class="button counter-plus">+1</button>
         </div>
         <div class="math">
             Step:
-            <button class="button minus">-2</button>
-            <button class="button plus">+2</button>
+            <button class="button step-minus">-2</button>
+            <button class="button step-plus">+2</button>
         </div>
     </section>
     <script>
@@ -74,44 +74,70 @@
     </script>
     <script>
         const counterEl = document.querySelector('.js-app .counter');
-        const buttonElMinus = document.querySelector('.js-app .minus');
-        const buttonElPlus = document.querySelector('.js-app .plus');
-        const sumEl = document.querySelector('.js-app .sum');
         const stepEl = document.querySelector('.js-app .step');
+        const sumEl = document.querySelector('.js-app .sum');
+        const counterMinusButtonEl = document.querySelector('.js-app .counter-minus');
+        const counterPlusButtonEl = document.querySelector('.js-app .counter-plus');
+        const stepMinusButtonEl = document.querySelector('.js-app .step-minus');
+        const stepPlusButtonEl = document.querySelector('.js-app .step-plus');
 
         const data = {
             counter: 1,
             step: 2
         };
 
-        const incrementCounterHandler = function () {};
-        const decrementCounterHandler = function () {};
-        //...
-        const getSum = function () {};
+        let result = null;
 
-        const queue = [getSum];
+        function calcSum() {
+            result = data.counter + data.step;
+        }
+
+        const queue = [calcSum];
 
         Object.keys(data).forEach(key => {
-            let value = data[key]; // data.counter, data.counter1, data.counter2
+            let value = data[key];
             Object.defineProperty(data, key, {
                 get: function () {
-                    console.log('get');
-                    // queue.push();
                     return value;
                 },
                 set: function (newValue) {
-                    console.log('set');
                     value = newValue;
                     queue.forEach(fn => fn());
                 }
             });
         });
 
+        const incrementCounterHandler = function () {
+            data.counter++;
+            counterEl.textContent = data.counter;
+            sumEl.textContent = result;
+        };
+        const decrementCounterHandler = function () {
+            data.counter--;
+            counterEl.textContent = data.counter;
+            sumEl.textContent = result;
+        };
+
+        const increaseStepHandler = function () {
+            data.step += 2;
+            stepEl.textContent = data.step;
+            sumEl.textContent = result;
+        };
+        const decreaseStepHandler = function () {
+            data.step -= 2;
+            stepEl.textContent = data.step;
+            sumEl.textContent = result;
+        };
+
+        counterMinusButtonEl.addEventListener('click', decrementCounterHandler);
+        counterPlusButtonEl.addEventListener('click', incrementCounterHandler);
+        stepMinusButtonEl.addEventListener('click', decreaseStepHandler);
+        stepPlusButtonEl.addEventListener('click', increaseStepHandler);
+
+        calcSum();
         counterEl.textContent = data.counter;
         stepEl.textContent = data.step;
-        getSum();
-        buttonElMinus.addEventListener('click', decrementCounterHandler);
-        buttonElPlus.addEventListener('click', incrementCounterHandler);
+        sumEl.textContent = result;
     </script>
 </body>
 
