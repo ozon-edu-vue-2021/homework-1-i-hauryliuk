@@ -14,8 +14,8 @@
     <section class="app vue-app">
         <h1>VUE</h1>
         <h2>How much will?</h2>
-        <p>{{counter}} + {{step}}</p>
-        <p><strong>Result: {{sum}}</strong></p>
+        <p>{{counter}} {{operation}} {{step}}</p>
+        <p><strong>Result: {{result}}</strong></p>
         <div class="math">
             Counter:
             <button class="button minus" v-on:click="decrementCounterHandler">-1</button>
@@ -25,6 +25,13 @@
             Step:
             <button class="button minus" v-on:click="decreaseStepHandler">-2</button>
             <button class="button plus" v-on:click="increaseStepHandler">+2</button>
+        </div>
+        <div class="operation">
+            <label for="operand-select">Operation:</label>
+            <select id="operand-select" class="operand" v-on:input="onOperandChange">
+                <option value="+">Plus</option>
+                <option value="-">Minus</option>
+            </select>
         </div>
     </section>
     <hr>
@@ -49,7 +56,8 @@
             el: '.vue-app',
             data: {
                 counter: 1,
-                step: 2
+                step: 2,
+                operation: '+',
             },
             methods: {
                 incrementCounterHandler() {
@@ -63,11 +71,19 @@
                 },
                 decreaseStepHandler() {
                     this.step -= 2;
+                },
+                onOperandChange(event) {
+                    this.operation = event.target.value;
                 }
             },
             computed: {
-                sum() {
-                    return this.counter + this.step;
+                result() {
+                    switch (this.operation) {
+                        case '+':
+                            return this.counter + this.step;
+                        case '-':
+                            return this.counter - this.step;
+                    }
                 }
             }
         })
