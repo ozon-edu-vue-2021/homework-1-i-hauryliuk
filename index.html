@@ -26,9 +26,9 @@
             <button class="button minus" v-on:click="decreaseStepHandler">-2</button>
             <button class="button plus" v-on:click="increaseStepHandler">+2</button>
         </div>
-        <div class="operation">
-            <label for="operand-select">Operation:</label>
-            <select id="operand-select" class="operand" v-on:input="onOperandChange">
+        <div class="operation-container">
+            <label for="v-operation-selector">Operation:</label>
+            <select id="v-operation-selector" class="operation" v-on:input="onOperatorChange">
                 <option value="+">Plus</option>
                 <option value="-">Minus</option>
             </select>
@@ -38,8 +38,8 @@
     <section class="app js-app">
         <h1>JS</h1>
         <h2>How much will!</h2>
-        <p><span class="counter"></span> + <span class="step"></span></p>
-        <p><strong>Result: <span class="sum"></span></strong></p>
+        <p><span id="counter"></span> <span id="operator"></span> <span id="step"></span></p>
+        <p><strong>Result: <span id="result"></span></strong></p>
         <div class="math">
             Counter:
             <button class="button counter-minus">-1</button>
@@ -49,6 +49,13 @@
             Step:
             <button class="button step-minus">-2</button>
             <button class="button step-plus">+2</button>
+        </div>
+        <div class="operation-container">
+            <label for="operation-selector">Operation:</label>
+            <select id="operation-selector" class="operation">
+                <option value="+">Plus</option>
+                <option value="-">Minus</option>
+            </select>
         </div>
     </section>
     <script>
@@ -72,7 +79,7 @@
                 decreaseStepHandler() {
                     this.step -= 2;
                 },
-                onOperandChange(event) {
+                onOperatorChange(event) {
                     this.operation = event.target.value;
                 }
             },
@@ -89,26 +96,35 @@
         })
     </script>
     <script>
-        const counterEl = document.querySelector('.js-app .counter');
-        const stepEl = document.querySelector('.js-app .step');
-        const sumEl = document.querySelector('.js-app .sum');
+        const counterEl = document.querySelector('#counter');
+        const operatorEl = document.querySelector('#operator');
+        const stepEl = document.querySelector('#step');
+        const resultEl = document.querySelector('#result');
         const counterMinusButtonEl = document.querySelector('.js-app .counter-minus');
         const counterPlusButtonEl = document.querySelector('.js-app .counter-plus');
         const stepMinusButtonEl = document.querySelector('.js-app .step-minus');
         const stepPlusButtonEl = document.querySelector('.js-app .step-plus');
+        const operationSelectorEl = document.querySelector('#operation-selector');
 
         const data = {
             counter: 1,
-            step: 2
+            step: 2,
+            operator: '+',
         };
-
         let result = null;
 
-        function calcSum() {
-            result = data.counter + data.step;
+        function calcResult() {
+            switch(data.operator) {
+                case '+':
+                    result = data.counter + data.step;
+                    break;
+                case '-':
+                    result = data.counter - data.step;
+                    break;
+            }
         }
 
-        const queue = [calcSum];
+        const queue = [calcResult];
 
         Object.keys(data).forEach(key => {
             let value = data[key];
@@ -126,34 +142,40 @@
         const incrementCounterHandler = function () {
             data.counter++;
             counterEl.textContent = data.counter;
-            sumEl.textContent = result;
+            resultEl.textContent = result;
         };
         const decrementCounterHandler = function () {
             data.counter--;
             counterEl.textContent = data.counter;
-            sumEl.textContent = result;
+            resultEl.textContent = result;
         };
-
         const increaseStepHandler = function () {
             data.step += 2;
             stepEl.textContent = data.step;
-            sumEl.textContent = result;
+            resultEl.textContent = result;
         };
         const decreaseStepHandler = function () {
             data.step -= 2;
             stepEl.textContent = data.step;
-            sumEl.textContent = result;
+            resultEl.textContent = result;
+        };
+        const changeOperatorHandler = function(event) {
+            data.operator = event.target.value;
+            operatorEl.textContent = data.operator;
+            resultEl.textContent = result;
         };
 
         counterMinusButtonEl.addEventListener('click', decrementCounterHandler);
         counterPlusButtonEl.addEventListener('click', incrementCounterHandler);
         stepMinusButtonEl.addEventListener('click', decreaseStepHandler);
         stepPlusButtonEl.addEventListener('click', increaseStepHandler);
+        operationSelectorEl.addEventListener('input', changeOperatorHandler);
 
-        calcSum();
+        calcResult();
         counterEl.textContent = data.counter;
+        operatorEl.textContent = data.operator;
         stepEl.textContent = data.step;
-        sumEl.textContent = result;
+        resultEl.textContent = result;
     </script>
 </body>
 
